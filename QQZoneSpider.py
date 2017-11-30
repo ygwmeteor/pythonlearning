@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 
 
 class seleniumTest(unittest.TestCase):
-    user = '130627199005273212'  # 你的QQ号
-    pw = '278173897'  # 你的QQ密码
+    user = ''  # 你的QQ号
+    pw = ''  # 你的QQ密码
 
     def setUp(self):
         # 调试的时候用firefox比较直观
