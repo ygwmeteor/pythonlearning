@@ -73,6 +73,22 @@ def main():
     #receiver = ['gavin.yuan@netbraintech.com' , 'feng.liu@netbraintech.com']
     #pwd = 'Netbrain12'
     
+    
+    #config.ini file content:
+    #
+    #[os]
+    #path=D:\test
+    #
+    #[email]
+    #server=smtp.office365.com
+    #sender=online@netbraintech.com
+    #pwd=Netbrain12
+    #receiver=gaowei.yuan@netbraintech.com,Feng.Liu@netbraintech.com
+    
+    
+    
+    
+    
     config = ConfigParser()
     config.read_file(open('config.ini'))
     path = config.get('os', 'path')
