@@ -11,11 +11,11 @@ from email.mime.text import MIMEText
 
 screen = "Bomgar Servers"
 #
-save_graph_path = "/var/www/zabbix/reports/%s"%time.strftime("%Y-%m-%d")
+save_graph_path = "/usr/share/zabbix/reports/%s"%time.strftime("%Y-%m-%d")
 if not os.path.exists(save_graph_path):
     os.makedirs(save_graph_path)
 # zabbix host
-zabbix_host = "localhost/zabbix"
+zabbix_host = "10.10.14.251/zabbix"
 # zabbix login username
 username = "yuangaowei"
 # zabbix login password
@@ -25,7 +25,7 @@ width = 500
 # graph height
 height = 100
 # graph Time period, s
-period = 86400
+period = 604800
 # zabbix DB
 dbhost = "localhost"
 dbport = 3306
@@ -33,11 +33,12 @@ dbuser = "zabbix"
 dbpasswd = "nb@233"
 dbname = "zabbix"
 # mail
-to_list = ["yuangaowei@netbrain.com","liufeng@netbrain.com"]
+to_list = ["yuangaowei@netbrain.com"]
 smtp_server = "10.10.10.8"
 mail_user = "zabbix"
-#mail_pass = "xxxxx"
+mail_pass = "xxxxx"
 domain  = "netbrain.com"
+subj = 'Bomgar Servers Status ' + time.strftime('%Y-%m-%d',time.localtime(time.time()))
 
 def mysql_query(sql):
     try:
@@ -96,7 +97,7 @@ def get_graph(zabbix_host,username,password,screen,width,height,period,save_grap
     screenid = '27'
     global html
     html = ''
-    graphid_list = [8895,8901,8903,8905,8897,8899,8907,8909]
+    graphid_list = [8895,8901,8903,8905,8897,8899,8926,8907,8909]
     for graphid in graphid_list:
         login_opt = urllib.urlencode({
         "name": username,
@@ -116,7 +117,7 @@ def get_graph(zabbix_host,username,password,screen,width,height,period,save_grap
         opener.open(login_url,login_opt).read()
         data = opener.open(save_graph_url,get_graph_opt).read()
         filename = "%s/%s.%s.png"%(save_graph_path,screenid,graphid)
-        html += '<img width="600" height="250" src="http://%s/%s/%s/%s.%s.png">'%(zabbix_host,save_graph_path.split("/")[len(save_graph_path.split("/"))-2],save_graph_path.split("/")[len(save_graph_path.split("/"))-1],screenid,graphid)
+        html += '<img width="600" height="250" src="http://%s/%s/%s/%s.%s.png">'%(zabbix_host,save_graph_path.split("/")[len(save_graph_path.split("/"))-2],save_graph_path.split("/")[len(save_graph_path.split("/"))-1],screenid,graphid) + '<p><br></p>'
         f = open(filename,"wb")
         f.write(data)
         f.close()            
@@ -125,7 +126,7 @@ def get_graph(zabbix_host,username,password,screen,width,height,period,save_grap
             
 def send_mail(username,password,smtp_server,to_list,sub,content):
     print to_list
-    me = "运维"+"<"+username+"@"+domain +">"
+    me = "Monitoring"+"<"+username+"@"+domain +">"
     msg = MIMEText(content,_subtype="html",_charset="utf8")
     msg["Subject"] = sub
     msg["From"] = me
@@ -133,7 +134,7 @@ def send_mail(username,password,smtp_server,to_list,sub,content):
     try:
         server = smtplib.SMTP()
         server.connect(smtp_server)
-        server.login(username,password)
+     #   server.login(username,password)
         server.sendmail(me,to_list,msg.as_string())
         server.close()
         print "send mail Ok!"
@@ -143,4 +144,4 @@ def send_mail(username,password,smtp_server,to_list,sub,content):
 if __name__ == '__main__':
 #    for screen in screens:
     get_graph(zabbix_host,username,password,screen,width,height,period,save_graph_path)
-    send_mail(mail_user,mail_pass,smtp_server,to_list,"test email",html)
+    send_mail(mail_user,mail_pass,smtp_server,to_list,subj,html)
