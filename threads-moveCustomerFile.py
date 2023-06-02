@@ -132,7 +132,7 @@ def main():
         if key == '-d':
             des_dir = value
         if key == '-h':
-            print(" -s <source_dir> -d <des_dir_dir>")
+            print(" -s <source_dir> -d <des_dir>")
     
 
     # source = 'D:/test'
